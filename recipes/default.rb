@@ -19,7 +19,7 @@ if logstash['host']
   chef_handler "LogStashNotify" do
     source "#{node['chef_handler']['handler_path']}/chef-logstash-notify.rb"
     arguments [
-      :host => logstash['hostname'],
+      :host => logstash['host'],
       :port => logstash['port'],
     ]
     supports :exception => true
