@@ -29,7 +29,7 @@ class LogStashNotify < Chef::Handler
     logmessage = LogMessage.new(node.name, message, @timestamp)
     begin
       timeout(10) do
-          s = TCPSocket.new("#{@hostname}", @port)
+          s = TCPSocket.new(@host, @port)
           s.write(logmessage.to_json)
           s.close
       end
