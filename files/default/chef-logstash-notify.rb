@@ -1,12 +1,17 @@
 require "chef/handler"
 require "json"
 require "socket"
+require "pp"
 
 class LogMessage
   def initialize(hostname, message, timestamp)
     @hostname=hostname
     @message=message
     @timestamp=timestamp
+  end
+
+  def to_json
+    {'hostname' => @hostname, 'message' => @message, 'timestamp' => @timestamp}.to_json
   end
 end
 
