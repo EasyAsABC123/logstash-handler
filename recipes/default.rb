@@ -21,6 +21,7 @@ if logstash['host']
     arguments [
       :host => logstash['host'],
       :port => logstash['port'],
+      :unique_message => logstash['unique_message']
     ]
     supports :exception => true
     action :nothing

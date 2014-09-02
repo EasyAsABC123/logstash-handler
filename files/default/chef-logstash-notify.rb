@@ -21,6 +21,7 @@ class LogStashNotify < Chef::Handler
   def initialize(options = {})
     @host = options[:host]
     @port = options[:port]
+    @unique_message = options[:unique_message]
     @timestamp = Time.now.getutc
   end
 
@@ -30,6 +31,7 @@ class LogStashNotify < Chef::Handler
 
   def message_log_stash
     message = "Chef failed on #{node.name} (#{formatted_run_list}) with: "
+    message += "Go run id: #{@unique_message}" if @unique_message != ''
     message += "#{run_status.formatted_exception}"
     logmessage = LogMessage.new(node.name, message, @timestamp)
     begin
