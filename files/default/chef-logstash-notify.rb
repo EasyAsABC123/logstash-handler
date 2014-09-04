@@ -31,9 +31,10 @@ class LogStashNotify < Chef::Handler
 
   def message_log_stash
     message = ''
-    message += "Go run id: #{@unique_message} " if @unique_message != ''
-    message += "Chef failed on #{node.name} (#{formatted_run_list}) with: "
-    message += "#{run_status.formatted_exception}"
+    message += "Go run id: #{@unique_message} \n" if @unique_message != ''
+    message += "Chef failed on #{node.name} (#{formatted_run_list}) with: \n"
+    message += "#{run_status.formatted_exception}\n"
+    message += "#{run_status.backtrace}"
     logmessage = LogMessage.new(node.name, message, @timestamp)
     begin
       timeout(10) do
