@@ -13,7 +13,6 @@ if logstash['host']
 
   cookbook_file "#{node['chef_handler']['handler_path']}/chef-logstash-notify.rb" do
     source "chef-logstash-notify.rb"
-    mode "0600"
   end.run_action(:create)
 
   chef_handler "LogStashNotify" do
