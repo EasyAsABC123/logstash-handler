@@ -1,28 +1,30 @@
+require "rubygems"
+require "chef"
 require "chef/handler"
 require "json"
 require "socket"
 require "pp"
 
-class LogMessage
-  def initialize(hostname, message, timestamp)
-    @hostname=hostname
-    @message=message
-    @timestamp=timestamp
-  end
-
-  def to_json
-    {'hostname' => @hostname, 'message' => @message, 'timestamp' => @timestamp}.to_json
-  end
-end
-
 class LogStashNotify < Chef::Handler
+  class LogMessage
+    def initialize(hostname, message, timestamp)
+      @hostname=hostname
+      @message=message
+      @timestamp=timestamp
+    end
+
+    def to_json
+      {'hostname' => @hostname, 'message' => @message, 'timestamp' => @timestamp}.to_json
+    end
+  end
+
   attr_writer :host,:port
 
   def initialize(options = {})
     @host = options[:host]
     @port = options[:port]
     @unique_message = options[:unique_message]
-    @timestamp = Time.now.getutc
+    @timestamp = ::Time.now.getutc
   end
 
   def formatted_run_list
@@ -35,15 +37,15 @@ class LogStashNotify < Chef::Handler
     message += "Chef failed on #{node.name} (#{formatted_run_list}) with: \n"
     message += "#{run_status.formatted_exception}\n"
     message += "#{run_status.backtrace}"
-    logmessage = LogMessage.new(node.name, message, @timestamp)
+    logmessage = ::LogMessage.new(node.name, message, @timestamp)
     begin
       timeout(10) do
-          s = TCPSocket.new("#{@host}", @port)
+          s = ::TCPSocket.new("#{@host}", @port)
           s.write(logmessage.to_json)
           s.close
       end
       Chef::Log.info("Informed chefs via Log Stash: #{message}")
-    rescue Timeout::Error
+    rescue ::Timeout::Error
       Chef::Log.error("Timed out while attempting to message chefs via Log Stash")
     rescue => error
       Chef::Log.error("Unexpected error while attempting to message chefs via Log Stash : #{error}")
