@@ -11,12 +11,12 @@ logstash ||= {}
 if logstash['host']
   include_recipe "chef_handler"
 
-  cookbook_file "#{node['chef_handler']['handler_path']}/chef-logstash-notify.rb" do
+  cookbook_file "#{Chef::Config[:file_cache_path]}/chef-logstash-notify.rb" do
     source "chef-logstash-notify.rb"
-  end.run_action(:create)
+  end
 
   chef_handler "LogStashNotify" do
-    source "#{node['chef_handler']['handler_path']}/chef-logstash-notify.rb"
+    source "#{Chef::Config[:file_cache_path]}/chef-logstash-notify.rb"
     arguments [
       :host => logstash['host'],
       :port => logstash['port'],
@@ -24,5 +24,5 @@ if logstash['host']
     ]
     supports :exception => true
     action :nothing
-  end.run_action(:enable)
+  end
 end
