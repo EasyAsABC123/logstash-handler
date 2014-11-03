@@ -21,11 +21,6 @@ if logstash['host']
 
   chef_handler 'LogStash::LogStashNotify' do
     source handler
-    arguments [
-      :host => logstash['host'],
-      :port => logstash['port'],
-      :unique_message => logstash['unique_message']
-    ]
     supports :report=>true, :exception=>true
     action :enable
   end
