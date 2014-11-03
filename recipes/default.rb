@@ -22,7 +22,8 @@ if logstash['host']
       :port => logstash['port'],
       :unique_message => logstash['unique_message']
     ]
-    supports :exception => true
+    supports :exception => true, 
+      :report => true if logstash['unique_message'] != nil && logstash['unique_message'] != ''
     action :nothing
   end.run_action(:enable)
 end
