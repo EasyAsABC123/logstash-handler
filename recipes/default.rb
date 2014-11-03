@@ -16,7 +16,7 @@ if logstash['host']
     action :nothing
   end.run_action(:create)
 
-  chef_handler "LogStashNotifyModule::LogStashNotify" do
+  chef_handler "::LogStashNotifyModule::LogStashNotify" do
     source "#{Chef::Config[:file_cache_path]}/chef-logstash-notify.rb"
     arguments [
       :host => logstash['host'],
