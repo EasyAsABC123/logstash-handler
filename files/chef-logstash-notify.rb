@@ -5,7 +5,6 @@ require "pp"
 module LogStash
   class LogStashNotify < Chef::Handler
 
-
     def report
       if (@unique_message != '' || run_status.failed?)
         Chef::Log.info("Chef run @ #{@timestamp}, informing chefs via Log Stash")
