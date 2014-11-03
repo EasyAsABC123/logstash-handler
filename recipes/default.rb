@@ -13,8 +13,8 @@ if logstash['host']
 
   cookbook_file "#{Chef::Config[:file_cache_path]}/chef-logstash-notify.rb" do
     source "chef-logstash-notify.rb"
-    action :nothing
-  end.run_action(:create)
+    action :create
+  end
 
   chef_handler "::LogStashNotifyModule::LogStashNotify" do
     source "#{Chef::Config[:file_cache_path]}/chef-logstash-notify.rb"
@@ -24,6 +24,6 @@ if logstash['host']
       :unique_message => logstash['unique_message']
     ]
     supports :report=>true, :exception=>true
-    action :nothing
-  end.run_action(:enable)
+    action :enable
+  end
 end
