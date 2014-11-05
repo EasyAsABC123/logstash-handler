@@ -10,7 +10,7 @@ logstash ||= {}
 
 if logstash['host']
   include_recipe 'chef_handler'
-
+  
   handler_path = node['chef_handler']['handler_path']
   handler = ::File.join handler_path, 'chef_logstash_notify'
   Chef::Log::info("#{handler}.rb")
@@ -24,11 +24,15 @@ if logstash['host']
   # This was primarily done to prevent others from having to stub
   # `include_recipe "reboot_handler"` inside ChefSpec.  ChefSpec
   # doesn't seem to handle the following well on convergence.
-  begin
-    require handler
-  rescue LoadError
-    log 'Unable to require the LogStash handler!' do
-      action :write
+  ruby_block "reload client config" do
+    block do
+      begin
+        require handler
+      rescue LoadError
+        log 'Unable to require the LogStash handler!' do
+          action :write
+        end
+      end
     end
   end
 
