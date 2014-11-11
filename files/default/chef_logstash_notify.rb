@@ -44,10 +44,10 @@ module LogStash
         message += "Chef failed on #{node.name} (#{formatted_run_list}) with: \n"
         message += "#{run_status.formatted_exception}\n"
         message += "#{run_status.backtrace}"
-        logmessage = ::LogMessage.new(node.name, message, @timestamp)
+        logmessage = LogMessage.new(node.name, message, @timestamp)
         begin
           timeout(10) do
-              s = ::TCPSocket.new("#{@host}", @port)
+              s = TCPSocket.new("#{@host}", @port)
               s.write(logmessage.to_json)
               s.close
           end
