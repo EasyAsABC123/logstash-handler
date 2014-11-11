@@ -31,7 +31,7 @@ module LogStash
         @host = options[:host]
         @port = options[:port]
         @unique_message = options[:unique_message]
-        @timestamp = ::Time.now.getutc
+        @timestamp = Time.now.getutc
       end
 
       def formatted_run_list
