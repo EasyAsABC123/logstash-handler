@@ -6,7 +6,7 @@ module LogStash
   class LogStashNotify < Chef::Handler
 
     def report
-      if (@unique_message != '' || run_status.failed?)
+      if @unique_message != ''
         Chef::Log.info("Chef run @ #{@timestamp}, informing chefs via Log Stash")
         message_log_stash
       end
@@ -30,6 +30,7 @@ module LogStash
       def initialize(options = {})
         @host = options[:host]
         @port = options[:port]
+        @godeploylog=options[:godeploylog]
         @unique_message = options[:unique_message]
         @timestamp = Time.now.getutc
       end
@@ -39,11 +40,22 @@ module LogStash
       end
 
       def message_log_stash
-        message = ''
-        message += "Go run id: #{@unique_message} \n" if @unique_message != ''
-        message += "Chef failed on #{node.name} (#{formatted_run_list}) with: \n"
-        message += "#{run_status.formatted_exception}\n"
-        message += "#{run_status.backtrace}"
+        message = String.new
+        message << "Go deployment id: #{@unique_message}\n"
+        message << "Chef run on #{node.name} (#{formatted_run_list})\n"
+        message << "Exception: #{run_status.formatted_exception}\n\n" if run_status.formatted_exception != ""
+        message << Array(run_status.backtrace).join("\n") if Array(run_status.backtrace).size > 0
+        begin
+        File.open(@godeploylog, "r:bom|utf-8:ascii"){|f|
+          message << f.read
+        }
+        rescue EOFError
+        rescue IOError => e
+          Chef::Log.error("Got IOError reading #{@godeploylog}")
+        rescue Errno::ENOENT
+          Chef::Log.error("Cannot open #{@godeploylog}")
+        end
+
         logmessage = LogMessage.new(node.name, message, @timestamp)
         begin
           timeout(10) do
