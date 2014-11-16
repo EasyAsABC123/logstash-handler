@@ -51,9 +51,9 @@ module LogStash
         }
         rescue EOFError
         rescue IOError => e
-          Chef::Log.error("Got IOError reading #{@godeploylog}")
+          Chef::Log.warn("Got IOError reading #{@godeploylog}")
         rescue Errno::ENOENT
-          Chef::Log.error("Cannot open #{@godeploylog}")
+          Chef::Log.warn("Cannot open #{@godeploylog}")
         end
 
         logmessage = LogMessage.new(node.name, message, @timestamp)
@@ -65,9 +65,9 @@ module LogStash
           end
           Chef::Log.info("Informed chefs via Log Stash: #{message}")
         rescue ::Timeout::Error
-          Chef::Log.error("Timed out while attempting to message chefs via Log Stash")
+          Chef::Log.warn("Timed out while attempting to message chefs via Log Stash")
         rescue => error
-          Chef::Log.error("Unexpected error while attempting to message chefs via Log Stash : #{error}")
+          Chef::Log.warn("Unexpected error while attempting to message chefs via Log Stash : #{error}")
         end
       end
   end
