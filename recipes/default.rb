@@ -17,8 +17,7 @@ if logstash['host']
 
   cookbook_file "#{handler}.rb" do
     source 'chef_logstash_notify.rb'
-    action :create
-  end
+  end.run_action(:create)
 
   ##
   # This was primarily done to prevent others from having to stub
@@ -34,16 +33,17 @@ if logstash['host']
         end
       end
     end
-  end
+  end.run_action(:run)
 
   chef_handler 'LogStash::LogStashNotify' do
     source handler
     arguments [
       :host => logstash['host'],
       :port => logstash['port'],
-      :unique_message => logstash['unique_message']
+      :unique_message => logstash['unique_message'],
+      :godeploylog => logstash['godeploylog']
     ]
     supports :report=>true, :exception=>true
-    action :enable
-  end
+    action :nothing
+  end.run_action(:enable)
 end
